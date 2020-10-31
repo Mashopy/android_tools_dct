@@ -2,7 +2,7 @@
 
 If you want to use this tools, simply use
 
-    python2 DrvGen.py example.dws out out
+    python3 DrvGen.py example.dws out out
 
 inside this folder. It is highly recommended to move the generated cust.dtsi to
 your device kernel at arch/arm64/boot/dts/include/example for allow the generation of dtbo files.

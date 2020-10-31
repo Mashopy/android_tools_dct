@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright Statement:
@@ -41,43 +41,43 @@ import os, sys
 import collections
 import xml.dom.minidom
 
-from GpioObj import GpioObj
-from GpioObj import GpioObj_MT6799
-from GpioObj import GpioObj_MT6759
-from GpioObj import GpioObj_MT6739
-from GpioObj import GpioObj_MT6771
-from GpioObj import GpioObj_MT6763
-from GpioObj import GpioObj_MT6768
-from GpioObj import GpioObj_MT6785
+from obj.GpioObj import GpioObj
+from obj.GpioObj import GpioObj_MT6799
+from obj.GpioObj import GpioObj_MT6759
+from obj.GpioObj import GpioObj_MT6739
+from obj.GpioObj import GpioObj_MT6771
+from obj.GpioObj import GpioObj_MT6763
+from obj.GpioObj import GpioObj_MT6768
+from obj.GpioObj import GpioObj_MT6785
 
-from EintObj import EintObj
-from EintObj import EintObj_MT6750S
-from EintObj import EintObj_MT6739
-from EintObj import EintObj_MT6885
-from EintObj import EintObj_MT6853
+from obj.EintObj import EintObj
+from obj.EintObj import EintObj_MT6750S
+from obj.EintObj import EintObj_MT6739
+from obj.EintObj import EintObj_MT6885
+from obj.EintObj import EintObj_MT6853
 
-from AdcObj import AdcObj
-from AdcObj import AdcObj_MT6785
+from obj.AdcObj import AdcObj
+from obj.AdcObj import AdcObj_MT6785
 
-from ClkObj import ClkObj
-from ClkObj import ClkObj_MT6797
-from ClkObj import ClkObj_MT6757
-from ClkObj import ClkObj_MT6570
-from ClkObj import ClkObj_MT6779
+from obj.ClkObj import ClkObj
+from obj.ClkObj import ClkObj_MT6797
+from obj.ClkObj import ClkObj_MT6757
+from obj.ClkObj import ClkObj_MT6570
+from obj.ClkObj import ClkObj_MT6779
 
-from I2cObj import I2cObj
-from I2cObj import I2cObj_MT6759
-from I2cObj import I2cObj_MT6775
+from obj.I2cObj import I2cObj
+from obj.I2cObj import I2cObj_MT6759
+from obj.I2cObj import I2cObj_MT6775
 
-from PmicObj import PmicObj
-from PmicObj import PmicObj_MT6758
+from obj.PmicObj import PmicObj
+from obj.PmicObj import PmicObj_MT6758
 
-from Md1EintObj import Md1EintObj
-from Md1EintObj import Md1EintObj_MT6739
-from PowerObj import PowerObj
-from KpdObj import KpdObj
-from RfioObj import RfioObj
-from ModuleObj import ModuleObj
+from obj.Md1EintObj import Md1EintObj
+from obj.Md1EintObj import Md1EintObj_MT6739
+from obj.PowerObj import PowerObj
+from obj.KpdObj import KpdObj
+from obj.RfioObj import RfioObj
+from obj.ModuleObj import ModuleObj
 
 from utility.util import log
 from utility.util import LogLevel
@@ -176,7 +176,7 @@ class ChipObj:
 
         # initialize the objects mapping table
         self.init_objs()
-        # get module nodes from DWS file
+        # get module nodes from .DWS file
         nodes = node[0].getElementsByTagName('module')
 
         for node in nodes:
@@ -215,7 +215,7 @@ class ChipObj:
             # return True
 
         for para in paras:
-            if cmp(para, 'cust_dtsi') == 0:
+            if para == 'cust_dtsi':
                 self.gen_custDtsi()
                 continue
 
@@ -253,7 +253,7 @@ class ChipObj:
         #sorted_list = sorted(self.__objs.keys())
         #for tag in sorted_list:
         for tag in self.__objs.keys():
-            if cmp(tag, 'gpio') == 0:
+            if tag == 'gpio':
                 gpioObj = self.create_obj(tag)
                 gen_str += ModuleObj.writeHeader(gpioObj.get_dtsiFileName())
                 gen_str += gpioObj.fill_mapping_dtsiFile()

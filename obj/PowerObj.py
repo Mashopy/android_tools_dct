@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Copyright Statement:
@@ -40,15 +40,15 @@
 import sys,os
 import re
 import string
-import ConfigParser
+import configparser
 import xml.dom.minidom
 
-import ChipObj
+import obj.ChipObj
 from data.PowerData import PowerData
 from utility.util import log
 from utility.util import LogLevel
 from utility.util import sorted_key
-from ModuleObj import ModuleObj
+from obj.ModuleObj import ModuleObj
 
 class PowerObj(ModuleObj):
     def __init__(self):
@@ -56,7 +56,7 @@ class PowerObj(ModuleObj):
         self.__list = {}
 
     def getCfgInfo(self):
-        cp = ConfigParser.ConfigParser(allow_no_value=True)
+        cp = configparser.ConfigParser(allow_no_value=True, strict=False)
         cp.read(ModuleObj.get_figPath())
 
         self.__list = cp.options('POWER')
@@ -100,7 +100,7 @@ class PowerObj(ModuleObj):
             value = ModuleObj.get_data(self)[key]
             if value.get_varName() == '':
                 continue
-            idx = string.atoi(key[5:])
+            idx = int(key[5:])
             name = self.__list[idx]
             gen_str += '''#define GPIO_%s\t\tGPIO_%s\n''' %(name.upper(), value.get_varName())
 
