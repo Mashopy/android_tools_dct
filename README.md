@@ -15,6 +15,7 @@ Currently, only those platforms are supported by the DCT tool
 - MT6765
 - MT6768
 - MT6771
+- MT6779
 - MT6785
 - MT6853
 - MT6873
