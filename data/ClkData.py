@@ -53,6 +53,9 @@ class ClkData:
     def get_varName(self):
         return self.__varName
 
+    def set_varNameList(self, varNameList):
+        self._varList = varNameList
+
 
 class OldClkData(ClkData):
     def __init__(self):

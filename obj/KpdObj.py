@@ -301,8 +301,12 @@ class KpdObj(ModuleObj):
             gen_str += '''\tmediatek,kpd-use-extend-type = <1>;\n'''
 
         #gen_str += '''\tmediatek,kpd-use-extend-type = <0>;\n'''
-        gen_str += '''\t/*HW Keycode [0~%d] -> Linux Keycode*/\n''' %(KpdData.get_row() * KpdData.get_col() - 1)
-        gen_str += '''\tmediatek,kpd-hw-map-num = <%d>;\n''' %(KpdData.get_row() * KpdData.get_col())
+        if KpdData.get_keyType() == 'NORMAL_TYPE':
+            gen_str += '''\t/*HW Keycode [0~%d] -> Linux Keycode*/\n''' %(KpdData.get_row() * KpdData.get_col() - 1)
+            gen_str += '''\tmediatek,kpd-hw-map-num = <%d>;\n''' %(KpdData.get_row() * KpdData.get_col())
+        else:
+            gen_str += '''\t/*HW Keycode [0~%d] -> Linux Keycode*/\n''' %(KpdData.get_row_ext() * KpdData.get_col_ext() - 1)
+            gen_str += '''\tmediatek,kpd-hw-map-num = <%d>;\n''' %(KpdData.get_row_ext() * KpdData.get_col_ext())
         gen_str += '''\tmediatek,kpd-hw-init-map = <'''
 
         if KpdData.get_keyType() == 'NORMAL_TYPE':
@@ -334,7 +338,66 @@ class KpdObj(ModuleObj):
         return gen_str
 
 
+class KpdObj_MT6879(KpdObj):
+    def fill_dtsiFile(self):
+        if KpdData.get_row() == 0 or KpdData.get_col() == 0:
+            return ""
+        gen_str = '''&keypad {\n'''
+        gen_str += '''\tmediatek,key-debounce = <%d>;\n''' %(KpdData.get_pressTime())
+        gen_str += '''\tmediatek,sw-pwrkey = <%d>;\n''' %(KpdData._keyValueMap[KpdData.get_utility()])
+        if KpdData.get_keyType() == 'NORMAL_TYPE':
+            gen_str += '''\tmediatek,hw-pwrkey = <%d>;\n''' %(KpdData.get_col()-1)
+        else:
+            gen_str += '''\tmediatek,hw-pwrkey = <%d>;\n''' %(KpdData.get_col_ext()-1)
 
+        #gen_str += '''\tmediatek,kpd-sw-rstkey  = <%d>;\n''' %(KpdData._keyValueMap[KpdData.get_homeKey()])
+        if KpdData.get_homeKey() != '':
+            gen_str += '''\tmediatek,sw-rstkey  = <%d>;\n''' %(KpdData.get_keyVal(KpdData.get_homeKey()))
+        if KpdData.get_keyType() == 'NORMAL_TYPE':
+            if KpdData.get_homeKey() != '':
+                gen_str += '''\tmediatek,hw-rstkey = <%d>;\n''' %(2*KpdData.get_col() - 1)
+            gen_str += '''\tmediatek,use-extend-type = <0>;\n'''
+        else:
+            if KpdData.get_homeKey() != '':
+                gen_str += '''\tmediatek,hw-rstkey = <%d>;\n''' %(2*KpdData.get_col_ext() - 1)
+            gen_str += '''\tmediatek,use-extend-type = <1>;\n'''
+
+        #gen_str += '''\tmediatek,kpd-use-extend-type = <0>;\n'''
+        if KpdData.get_keyType() == 'NORMAL_TYPE':
+            gen_str += '''\t/*HW Keycode [0~%d] -> Linux Keycode*/\n''' %(KpdData.get_row() * KpdData.get_col() - 1)
+            gen_str += '''\tmediatek,hw-map-num = <%d>;\n''' %(KpdData.get_row() * KpdData.get_col())
+        else:
+            gen_str += '''\t/*HW Keycode [0~%d] -> Linux Keycode*/\n''' %(KpdData.get_row_ext() * KpdData.get_col_ext() - 1)
+            gen_str += '''\tmediatek,hw-map-num = <%d>;\n''' %(KpdData.get_row_ext() * KpdData.get_col_ext())
+        gen_str += '''\tmediatek,hw-init-map = <'''
+
+        if KpdData.get_keyType() == 'NORMAL_TYPE':
+            for key in KpdData.get_matrix():
+                idx = KpdData._keyValueMap[key]
+                gen_str += '''%d ''' %(idx)
+        else:
+            for key in KpdData.get_matrix_ext():
+                idx = KpdData._keyValueMap[key]
+                gen_str += '''%d ''' %(idx)
+
+        gen_str.rstrip()
+        gen_str += '''>;\n'''
+        gen_str += '''\tmediatek,pwrkey-eint-gpio = <%d>;\n''' %(KpdData.get_gpioNum())
+        gen_str += '''\tmediatek,pwkey-gpio-din  = <%d>;\n''' %(int(KpdData.get_gpioDinHigh()))
+        for key in KpdData.get_downloadKeys():
+            if key == 'NC':
+                continue
+            gen_str += '''\tmediatek,hw-dl-key%d = <%s>;\n''' %(KpdData.get_downloadKeys().index(key), self.get_matrixIdx(key))
+
+        for (key, value) in KpdData.get_modeKeys().items():
+            if value == 'NC':
+                continue
+            gen_str += '''\tmediatek,hw-%s-key = <%d>;\n''' %(key.lower(), self.get_matrixIdx(value))
+
+        gen_str += '''\tstatus = \"okay\";\n'''
+        gen_str += '''};\n'''
+
+        return gen_str
 
 
 

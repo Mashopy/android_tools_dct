@@ -501,9 +501,7 @@ class EintObj_MT6885(EintObj_MT6739):
             gen_str += '''\tinterrupts = <%s %s %s %d>;\n''' % (key[4:], temp, self.refGpio(key[4:], True)[0], self.refGpio_defMode(key[4:], True))
             if value.get_debounceEnable() == 'Enable':
                 gen_str += '''\tdeb-gpios = <&pio %s 0>;\n''' % (self.refGpio(key[4:], True)[0])
-                # from MT6885, only 0 ~ 31 eint gen debounce time item
-                if int(key[4:]) < 32:
-                    gen_str += '''\tdebounce = <%d>;\n''' % (int(value.get_debounceTime()) * 1000)
+                gen_str += '''\tdebounce = <%d>;\n''' % (int(value.get_debounceTime()) * 1000)
             gen_str += '''\tstatus = \"okay\";\n'''
             gen_str += '''};\n'''
             gen_str += '''\n'''
@@ -539,9 +537,7 @@ class EintObj_MT6853(EintObj_MT6885):
             gen_str += '''\tinterrupts = <%s %s>;\n''' % (key[4:], temp)
             if value.get_debounceEnable() == 'Enable':
                 gen_str += '''\tdeb-gpios = <&pio %s 0>;\n''' % (self.refGpio(key[4:], True)[0])
-                # from MT6885, only 0 ~ 31 eint gen debounce time item
-                if int(key[4:]) < 32:
-                    gen_str += '''\tdebounce = <%d>;\n''' % (int(value.get_debounceTime()) * 1000)
+                gen_str += '''\tdebounce = <%d>;\n''' % (int(value.get_debounceTime()) * 1000)
             gen_str += '''\tstatus = \"okay\";\n'''
             gen_str += '''};\n'''
             gen_str += '''\n'''
