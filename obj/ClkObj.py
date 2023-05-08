@@ -763,7 +763,7 @@ class ClkObj_MT6789(ClkObj):
         ClkObj.__init__(self)
 
     def get_cfgInfo(self):
-        cp = ConfigParser.ConfigParser(allow_no_value=True)
+        cp = configparser.ConfigParser(allow_no_value=True)
         cp.read(ModuleObj.get_figPath())
 
         hw_control_split = 0
@@ -773,8 +773,8 @@ class ClkObj_MT6789(ClkObj):
         ops = cp.options('CLK_BUF')
         for op in ops:
             if op == 'clk_buf_count':
-                self.__count = string.atoi(cp.get('CLK_BUF', op))
-                ClkData._count = string.atoi(cp.get('CLK_BUF', op))
+                self.__count = int(cp.get('CLK_BUF', op))
+                ClkData._count = int(cp.get('CLK_BUF', op))
                 continue
 
             value = cp.get('CLK_BUF', op)
@@ -784,8 +784,8 @@ class ClkObj_MT6789(ClkObj):
             if hw_control_split != 0:
                 data.set_varNameList(['DISABLE', 'SW_CONTROL', 'HW_CONTROL1', 'HW_CONTROL2', 'HW_CONTROL3'])
             data.set_curList(var_list[2:])
-            data.set_defVarName(string.atoi(var_list[0]))
-            data.set_defCurrent(string.atoi(var_list[1]))
+            data.set_defVarName(int(var_list[0]))
+            data.set_defCurrent(int(var_list[1]))
 
             key = op[16:].upper()
             ModuleObj.set_data(self, key, data)
